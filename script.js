@@ -42,15 +42,18 @@ function startExperiment() {
     currentStage = 'pre-feedback'; // Move to pre-feedback stage
 }
 
-// Event listener for start button
-document.getElementById('start-button').addEventListener('click', function() {
-    console.log('Start button clicked'); // Add this line for debugging
+// Event listener for start button (click and touch)
+document.getElementById('start-button').addEventListener('click', handleStartButton);
+document.getElementById('start-button').addEventListener('touchstart', handleStartButton);
+
+function handleStartButton() {
+    console.log('Start button clicked');
     participantID = document.getElementById('participant-id').value;
     feedbackType = document.getElementById('feedback-type').value;
 
     // Show instructions and canvas for the experiment
     document.getElementById('instructions').classList.remove('hidden');
-});
+}
 
 
 // Function to move to the feedback stage
