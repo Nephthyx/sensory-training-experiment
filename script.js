@@ -20,45 +20,29 @@ const synth = new Tone.Synth().toDestination();
 
 // Function to initialize the experiment (show intro screen)
 function showIntro() {
-    document.getElementById('instructions').classList.add('hidden');
+    document.getElementById('experiment-screen').classList.add('hidden');
     document.getElementById('thank-you').classList.add('hidden');
-    document.getElementById('results').classList.add('hidden');
+    document.getElementById('results-screen').classList.add('hidden');
     currentStage = 'intro';
 }
 
 // Function to start the experiment
 function startExperiment() {
-    console.log('Start Experiment button clicked.'); // Debugging log
+    alert('Start Experiment button clicked!'); // Debugging log
     participantID = document.getElementById('participant-id').value;
     feedbackType = document.getElementById('feedback-type').value;
 
-    console.log(`Participant ID: ${participantID}, Feedback Type: ${feedbackType}`); // Debugging log
+    alert(`Participant ID: ${participantID}, Feedback Type: ${feedbackType}`); // Debugging log
 
-    // Hide intro and show instructions
-    document.getElementById('instructions').classList.remove('hidden');
-    document.getElementById('thank-you').classList.add('hidden');
-    document.getElementById('results').classList.add('hidden');
-
+    // Hide start screen and show the experiment screen
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('experiment-screen').classList.remove('hidden');
     currentStage = 'pre-feedback'; // Move to pre-feedback stage
 }
 
-// Event listener for start button (click and touch)
-document.getElementById('start-button').addEventListener('click', handleStartButton);
-document.getElementById('start-button').addEventListener('touchstart', handleStartButton);
-
-function handleStartButton() {
-    console.log('Start button clicked');
-    participantID = document.getElementById('participant-id').value;
-    feedbackType = document.getElementById('feedback-type').value;
-
-    // Show instructions and canvas for the experiment
-    document.getElementById('instructions').classList.remove('hidden');
-}
-
-
 // Function to move to the feedback stage
 function startFeedbackStage() {
-    console.log('Starting Feedback Stage'); // Debugging log
+    alert('Starting Feedback Stage'); // Debugging log
     currentStage = 'feedback';
 
     // Add feedback-specific instructions
@@ -71,10 +55,10 @@ function startFeedbackStage() {
 
 // Function to finish the experiment
 function finishExperiment() {
-    console.log('Finishing Experiment'); // Debugging log
+    alert('Finishing Experiment'); // Debugging log
     currentStage = 'results';
 
-    document.getElementById('instructions').classList.add('hidden');
+    document.getElementById('experiment-screen').classList.add('hidden');
     document.getElementById('thank-you').classList.remove('hidden');
 }
 
@@ -149,7 +133,7 @@ function calculateResults(points, timeTaken) {
     let accuracy = 0; // Replace with actual calculation
     let speed = timeTaken;
 
-    console.log(`Accuracy: ${accuracy}, Speed: ${speed}`); // Debugging log
+    alert(`Accuracy: ${accuracy}, Speed: ${speed}`); // Debugging log
 
     displayResults(accuracy, speed);
 }
@@ -186,7 +170,7 @@ function playPathSequence() {
 }
 
 // Event listeners
-document.getElementById('start-button').addEventListener('click', startExperiment);
+document.getElementById('start-button').addEventListener('touchstart', startExperiment);
 document.getElementById('start-trial').addEventListener('click', startFeedbackStage);
 document.getElementById('view-results').addEventListener('click', finishExperiment);
 
