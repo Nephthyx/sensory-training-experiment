@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensory Training Experiment</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <!-- Tone.js for sound generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.35/Tone.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Title of Your Experiment</h1>
+        <p>Welcome to the sensory training experiment. Please follow the instructions carefully to complete the task.</p>
+
+        <!-- Participant ID and Selection -->
+        <label for="participant-id">Enter Participant ID (optional):</label>
+        <input type="text" id="participant-id" placeholder="Participant ID">
+
+        <!-- Feedback Type Selection -->
+        <label for="feedback-type">Select Feedback Type:</label>
+        <select id="feedback-type">
+            <option value="visual">Visual Feedback</option>
+            <option value="auditory">Auditory Feedback</option>
+            <option value="none">No Feedback (Control)</option>
+            <option value="retention">Retention Check <span id="info-icon" title="Trial base and unique paths for retention">ℹ️</span></option>
+        </select>
+
+        <!-- Start Button -->
+        <button id="start-button">Start Experiment</button>
+
+        <!-- Instructional prompt and canvas for the experiment -->
+        <div id="instructions" class="hidden">
+            <p>Follow the path shown below. You will receive feedback based on the selected mode.</p>
+            <canvas id="experiment-canvas" width="500" height="500"></canvas>
+            <button id="start-trial">Start Trial</button>
+        </div>
+
+        <!-- Thank you message at the end -->
+        <div id="thank-you" class="hidden">
+            <p>Thank you for participating!</p>
+            <button id="view-results">View Results</button>
+        </div>
+
+        <!-- Results section (for the researcher) -->
+        <div id="results" class="hidden">
+            <h2>Participant Results</h2>
+            <pre id="results-display"></pre>
+        </div>
+    </div>
+</body>
+</html>
