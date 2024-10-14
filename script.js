@@ -1,104 +1,106 @@
 // Variables to store state
-let currentStage = 'intro'; // The current stage (intro, pre-feedback, feedback, post-feedback, results)
-let feedbackType = ''; // The feedback type selected by the participant
-let participantID = ''; // The optional participant ID
-
-// Variables for timing and accuracy
+let feedbackType = '';
+let participantID = '';
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
-let startTime;
-let endTime;
-let points = []; // To store points for accuracy calculation
+let points = [];
+let shapeDrawn = false; // To track whether the bottom shape has been removed
+let startTime, endTime;
 
 // Canvas and context
-const canvas = document.getElementById('experiment-canvas');
-const ctx = canvas.getContext('2d');
+const topCanvas = document.getElementById('top-canvas');
+const topCtx = topCanvas.getContext('2d');
+const bottomCanvas = document.getElementById('bottom-canvas');
+const bottomCtx = bottomCanvas.getContext('2d');
 
-// Tone.js synth for auditory feedback
-const synth = new Tone.Synth().toDestination();
+// Prevent touch actions (like scrolling) on the canvas
+topCanvas.addEventListener('touchstart', preventDefault, { passive: false });
+topCanvas.addEventListener('touchmove', preventDefault, { passive: false });
+bottomCanvas.addEventListener('touchstart', preventDefault, { passive: false });
+bottomCanvas.addEventListener('touchmove', preventDefault, { passive: false });
 
-// Function to initialize the experiment (show intro screen)
-function showIntro() {
-    document.getElementById('experiment-screen').classList.add('hidden');
-    document.getElementById('thank-you').classList.add('hidden');
-    document.getElementById('results-screen').classList.add('hidden');
-    currentStage = 'intro';
+function preventDefault(e) {
+    e.preventDefault(); // Prevent the default behavior like scrolling
 }
 
-// Function to start the experiment
-function startExperiment() {
-    alert('Start Experiment button clicked!'); // Debugging log
+// Start Experiment
+document.getElementById('start-button').addEventListener('click', function() {
     participantID = document.getElementById('participant-id').value;
     feedbackType = document.getElementById('feedback-type').value;
 
-    alert(`Participant ID: ${participantID}, Feedback Type: ${feedbackType}`); // Debugging log
-
-    // Hide start screen and show the experiment screen
+    // Hide start screen and show experiment screen
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('experiment-screen').classList.remove('hidden');
-    currentStage = 'pre-feedback'; // Move to pre-feedback stage
-}
 
-// Function to move to the feedback stage
-function startFeedbackStage() {
-    alert('Starting Feedback Stage'); // Debugging log
-    currentStage = 'feedback';
+    // Draw the shape on both canvases
+    drawShape(topCtx, false); // Dots only on top
+    drawShape(bottomCtx, true); // Full shape on bottom
+});
 
-    // Add feedback-specific instructions
-    if (feedbackType === 'visual') {
-        drawPath(); // Visual feedback
-    } else if (feedbackType === 'auditory') {
-        playPathSequence(); // Auditory feedback
-    }
-}
-
-// Function to finish the experiment
-function finishExperiment() {
-    alert('Finishing Experiment'); // Debugging log
-    currentStage = 'results';
-
-    document.getElementById('experiment-screen').classList.add('hidden');
-    document.getElementById('thank-you').classList.remove('hidden');
-}
-
-// Placeholder: Drawing a pentagon path on the canvas
-function drawPath() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-
-    // Draw a pentagon
+// Function to draw the shape (pentagon for example)
+function drawShape(ctx, fullShape = true) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
     const points = 5;
     const radius = 100;
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    const centerX = ctx.canvas.width / 2;
+    const centerY = ctx.canvas.height / 2;
 
-    ctx.beginPath();
-    for (let i = 0; i <= points; i++) {
-        const angle = (2 * Math.PI / points) * i;
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
+    if (fullShape) {
+        ctx.beginPath();
+        for (let i = 0; i <= points; i++) {
+            const angle = (2 * Math.PI / points) * i;
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.stroke();
+    } else {
+        // Draw dots at the vertices
+        for (let i = 0; i < points; i++) {
+            const angle = (2 * Math.PI / points) * i;
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fill();
         }
     }
-    ctx.stroke(); // Render the path
 }
 
-// Function to start drawing (triggered by pointerdown)
-function startDrawing(e) {
+// Handle drawing on the bottom canvas (mirror task)
+bottomCanvas.addEventListener('pointerdown', (e) => {
+    if (!shapeDrawn) {
+        startDrawing(e, bottomCanvas, bottomCtx);
+        // Remove bottom shape after pen down
+        shapeDrawn = true;
+        bottomCtx.clearRect(0, 0, bottomCanvas.width, bottomCanvas.height);
+    }
+});
+
+bottomCanvas.addEventListener('pointermove', (e) => {
+    if (isDrawing) draw(e, bottomCanvas, bottomCtx);
+});
+
+bottomCanvas.addEventListener('pointerup', stopDrawing);
+bottomCanvas.addEventListener('pointerleave', stopDrawing);
+
+// Start drawing function
+function startDrawing(e, canvas, ctx) {
     isDrawing = true;
     const rect = canvas.getBoundingClientRect();
     lastX = e.clientX - rect.left;
     lastY = e.clientY - rect.top;
-    startTime = new Date(); // Start timing for speed calculation
-
-    points.push({ x: lastX, y: lastY }); // Store the starting point
+    startTime = new Date(); // Start time for speed calculation
 }
 
-// Function to draw on the canvas
-function draw(e) {
+// Drawing function
+function draw(e, canvas, ctx) {
     if (!isDrawing) return;
 
     const rect = canvas.getBoundingClientRect();
@@ -115,70 +117,28 @@ function draw(e) {
     points.push({ x: currentX, y: currentY });
 }
 
-// Function to stop drawing (triggered by pointerup or pointerleave)
+// Stop drawing function
 function stopDrawing() {
     if (!isDrawing) return;
     isDrawing = false;
-
     endTime = new Date();
-    const timeTaken = (endTime - startTime) / 1000; // Time in seconds
+    const timeTaken = (endTime - startTime) / 1000;
 
-    // Call function to calculate and store the results
-    calculateResults(points, timeTaken);
+    console.log(`Time taken: ${timeTaken} seconds`);
+    // Add logic to calculate accuracy and speed
 }
 
-// Function to calculate results (accuracy and speed)
-function calculateResults(points, timeTaken) {
-    // Placeholder for accuracy and speed calculation
-    let accuracy = 0; // Replace with actual calculation
-    let speed = timeTaken;
-
-    alert(`Accuracy: ${accuracy}, Speed: ${speed}`); // Debugging log
-
-    displayResults(accuracy, speed);
-}
-
-// Function to display results on the results screen
-function displayResults(accuracy, speed) {
+// Results and restart logic
+document.getElementById('view-results').addEventListener('click', function() {
     const results = {
         participantID: participantID,
         feedbackType: feedbackType,
-        accuracy: accuracy.toFixed(3), // Use at least 3 decimal places
-        speed: speed.toFixed(3),
+        time: (endTime - startTime) / 1000,
     };
 
     document.getElementById('results-display').textContent = JSON.stringify(results, null, 2);
-}
+});
 
-// Create a synth to generate sound
-function playNote(note, duration) {
-    synth.triggerAttackRelease(note, duration);
-}
-
-// Function to play the sequence of notes for auditory feedback
-function playPathSequence() {
-    const notes = ['C4', 'D4', 'E4', 'F4', 'G4'];
-    const duration = '0.5';
-
-    notes.forEach((note, index) => {
-        Tone.Transport.scheduleOnce(() => {
-            playNote(note, duration);
-        }, index);
-    });
-
-    Tone.Transport.start();
-}
-
-// Event listeners
-document.getElementById('start-button').addEventListener('touchstart', startExperiment);
-document.getElementById('start-trial').addEventListener('click', startFeedbackStage);
-document.getElementById('view-results').addEventListener('click', finishExperiment);
-
-// Event listeners for canvas drawing
-canvas.addEventListener('pointerdown', startDrawing);
-canvas.addEventListener('pointermove', draw);
-canvas.addEventListener('pointerup', stopDrawing);
-canvas.addEventListener('pointerleave', stopDrawing);
-
-// Call showIntro to initialize the page correctly
-showIntro();
+document.getElementById('restart').addEventListener('click', function() {
+    location.reload(); // Reload the page to restart
+});
