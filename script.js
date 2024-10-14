@@ -125,3 +125,18 @@ canvas.addEventListener('pointerdown', startDrawing);
 canvas.addEventListener('pointermove', draw);
 canvas.addEventListener('pointerup', stopDrawing);
 canvas.addEventListener('pointerleave', stopDrawing);
+
+
+// Create a synth to generate sound
+const synth = new Tone.Synth().toDestination();
+
+// Function to play a note
+function playNote(note, duration) {
+    synth.triggerAttackRelease(note, duration);
+}
+
+// Example usage: Play the note 'C4' for 0.5 seconds
+document.getElementById('start-trial').addEventListener('click', function() {
+    playNote('C4', '0.5');
+    // Continue with your trial logic here
+});
