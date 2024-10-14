@@ -140,3 +140,34 @@ document.getElementById('start-trial').addEventListener('click', function() {
     playNote('C4', '0.5');
     // Continue with your trial logic here
 });
+
+// Function to play a sequence of notes for the auditory feedback group
+function playPathSequence() {
+    const notes = ['C4', 'D4', 'E4', 'F4', 'G4']; // Example notes for pentagon points
+    const duration = '0.5'; // Duration of each note
+
+    notes.forEach((note, index) => {
+        // Schedule each note with a delay based on its position in the sequence
+        Tone.Transport.scheduleOnce(() => {
+            playNote(note, duration);
+        }, index);
+    });
+
+    Tone.Transport.start(); // Start the sequencer
+}
+
+// Trigger the path sequence when the feedback phase starts
+document.getElementById('start-trial').addEventListener('click', function() {
+    if (feedbackType === 'auditory') {
+        playPathSequence();
+    }
+});
+
+document.getElementById('start-trial').addEventListener('click', function() {
+    if (feedbackType === 'visual') {
+        drawPath(); // Visual feedback (path drawn on the canvas)
+    } else if (feedbackType === 'auditory') {
+        playPathSequence(); // Auditory feedback (notes played for path)
+    }
+});
+
