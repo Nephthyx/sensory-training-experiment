@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensory Training Experiment</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
     <!-- Tone.js for sound generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.35/Tone.js"></script>
     <style>
         /* Hides sections until needed */
         .hidden {
             display: none;
+        }
+        
+        /* Prevent touch actions on the canvas */
+        canvas {
+            border: 1px solid black;
+            touch-action: none; /* Disable scrolling/panning */
         }
     </style>
 </head>
@@ -40,10 +47,14 @@
             <button id="start-button">Start Experiment</button>
         </div>
 
-        <!-- Instructional prompt and canvas for the experiment -->
+        <!-- Experiment Screen -->
         <div id="experiment-screen" class="hidden">
             <p>Follow the path shown below. You will receive feedback based on the selected mode.</p>
-            <canvas id="experiment-canvas" width="500" height="500" style="border: 1px solid black;"></canvas>
+
+            <!-- Split the screen horizontally -->
+            <canvas id="top-canvas" width="500" height="250" style="border: 1px solid black;"></canvas>
+            <canvas id="bottom-canvas" width="500" height="250" style="border: 1px solid black;"></canvas>
+
             <button id="start-trial">Start Trial</button>
         </div>
 
@@ -60,7 +71,5 @@
             <button id="restart">Restart Experiment</button>
         </div>
     </div>
-
-    <script src="script.js" defer></script>
 </body>
 </html>
