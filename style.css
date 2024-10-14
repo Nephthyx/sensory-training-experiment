@@ -1,0 +1,20 @@
+/* Basic page styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none;
+}
+
+canvas {
+    border: 1px solid #000;
+    margin-top: 20px;
+}
