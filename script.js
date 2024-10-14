@@ -64,3 +64,64 @@ document.getElementById('view-results').addEventListener('click', function() {
 
     document.getElementById('results-display').textContent = JSON.stringify(results, null, 2);
 });
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let startTime;
+let endTime;
+let points = []; // To store points for accuracy calculation
+
+// Get the canvas and context
+const canvas = document.getElementById('experiment-canvas');
+const ctx = canvas.getContext('2d');
+
+// Function to start drawing
+function startDrawing(e) {
+    isDrawing = true;
+    const rect = canvas.getBoundingClientRect();
+    lastX = e.clientX - rect.left; // Adjust to canvas position
+    lastY = e.clientY - rect.top;
+    startTime = new Date(); // Start timing for speed calculation
+
+    points.push({ x: lastX, y: lastY }); // Store the starting point
+}
+
+// Function to draw as pointer moves
+function draw(e) {
+    if (!isDrawing) return; // Only draw when mouse/pencil is pressed down
+
+    const rect = canvas.getBoundingClientRect();
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+
+    // Update last position and save the point for accuracy
+    lastX = currentX;
+    lastY = currentY;
+    points.push({ x: currentX, y: currentY });
+}
+
+// Function to stop drawing
+function stopDrawing() {
+    if (!isDrawing) return;
+
+    isDrawing = false;
+    endTime = new Date(); // End timing for speed calculation
+
+    const timeTaken = (endTime - startTime) / 1000; // Time in seconds
+    console.log(`Time taken: ${timeTaken} seconds`);
+
+    // Call a function to analyze the path for accuracy and speed here
+    calculateResults(points, timeTaken);
+}
+
+// Event listeners for the canvas
+canvas.addEventListener('pointerdown', startDrawing);
+canvas.addEventListener('pointermove', draw);
+canvas.addEventListener('pointerup', stopDrawing);
+canvas.addEventListener('pointerleave', stopDrawing);
