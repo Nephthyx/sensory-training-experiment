@@ -28,8 +28,11 @@ function showIntro() {
 
 // Function to start the experiment
 function startExperiment() {
+    console.log('Start Experiment button clicked.'); // Debugging log
     participantID = document.getElementById('participant-id').value;
     feedbackType = document.getElementById('feedback-type').value;
+
+    console.log(`Participant ID: ${participantID}, Feedback Type: ${feedbackType}`); // Debugging log
 
     // Hide intro and show instructions
     document.getElementById('instructions').classList.remove('hidden');
@@ -41,6 +44,7 @@ function startExperiment() {
 
 // Function to move to the feedback stage
 function startFeedbackStage() {
+    console.log('Starting Feedback Stage'); // Debugging log
     currentStage = 'feedback';
 
     // Add feedback-specific instructions
@@ -53,6 +57,7 @@ function startFeedbackStage() {
 
 // Function to finish the experiment
 function finishExperiment() {
+    console.log('Finishing Experiment'); // Debugging log
     currentStage = 'results';
 
     document.getElementById('instructions').classList.add('hidden');
@@ -130,7 +135,7 @@ function calculateResults(points, timeTaken) {
     let accuracy = 0; // Replace with actual calculation
     let speed = timeTaken;
 
-    console.log(`Accuracy: ${accuracy}, Speed: ${speed}`);
+    console.log(`Accuracy: ${accuracy}, Speed: ${speed}`); // Debugging log
 
     displayResults(accuracy, speed);
 }
@@ -176,3 +181,6 @@ canvas.addEventListener('pointerdown', startDrawing);
 canvas.addEventListener('pointermove', draw);
 canvas.addEventListener('pointerup', stopDrawing);
 canvas.addEventListener('pointerleave', stopDrawing);
+
+// Call showIntro to initialize the page correctly
+showIntro();
