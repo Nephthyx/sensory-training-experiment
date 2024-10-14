@@ -8,32 +8,43 @@
     <script src="script.js" defer></script>
     <!-- Tone.js for sound generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.35/Tone.js"></script>
+    <style>
+        /* Hides sections until needed */
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Title of Your Experiment</h1>
-        <p>Welcome to the sensory training experiment. Please follow the instructions carefully to complete the task.</p>
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1>Title of Your Experiment</h1>
+            <p>Welcome to the sensory training experiment. Please follow the instructions carefully to complete the task.</p>
 
-        <!-- Participant ID and Selection -->
-        <label for="participant-id">Enter Participant ID (optional):</label>
-        <input type="text" id="participant-id" placeholder="Participant ID">
+            <!-- Participant ID and Selection -->
+            <label for="participant-id">Enter Participant ID (optional):</label>
+            <input type="text" id="participant-id" placeholder="Participant ID">
 
-        <!-- Feedback Type Selection -->
-        <label for="feedback-type">Select Feedback Type:</label>
-        <select id="feedback-type">
-            <option value="visual">Visual Feedback</option>
-            <option value="auditory">Auditory Feedback</option>
-            <option value="none">No Feedback (Control)</option>
-            <option value="retention">Retention Check <span id="info-icon" title="Trial base and unique paths for retention">ℹ️</span></option>
-        </select>
+            <!-- Feedback Type Selection -->
+            <label for="feedback-type">Select Feedback Type:</label>
+            <select id="feedback-type">
+                <option value="visual">Visual Feedback</option>
+                <option value="auditory">Auditory Feedback</option>
+                <option value="none">No Feedback (Control)</option>
+                <option value="retention">Retention Check 
+                    <span id="info-icon" title="Trial base and unique paths for retention">ℹ️</span>
+                </option>
+            </select>
 
-        <!-- Start Button -->
-        <button id="start-button">Start Experiment</button>
+            <!-- Start Button -->
+            <button id="start-button">Start Experiment</button>
+        </div>
 
         <!-- Instructional prompt and canvas for the experiment -->
-        <div id="instructions" class="hidden">
+        <div id="experiment-screen" class="hidden">
             <p>Follow the path shown below. You will receive feedback based on the selected mode.</p>
-            <canvas id="experiment-canvas" width="500" height="500"></canvas>
+            <canvas id="experiment-canvas" width="500" height="500" style="border: 1px solid black;"></canvas>
             <button id="start-trial">Start Trial</button>
         </div>
 
@@ -44,9 +55,10 @@
         </div>
 
         <!-- Results section (for the researcher) -->
-        <div id="results" class="hidden">
+        <div id="results-screen" class="hidden">
             <h2>Participant Results</h2>
             <pre id="results-display"></pre>
+            <button id="restart">Restart Experiment</button>
         </div>
     </div>
 </body>
